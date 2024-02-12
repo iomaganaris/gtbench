@@ -8,6 +8,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 #include <gtbench/numerics/solver.hpp>
+#include <utils/profiler.hpp>
 
 namespace gtbench {
 namespace numerics {
@@ -92,6 +93,7 @@ stepper_t rkadv_stepper() {
 }
 
 stepper_t advdiff_stepper(real_t diffusion_coeff) {
+  ProfileMarker("advdiff_step");
   return [diffusion_coeff](solver_state const &state, exchange_t exchange) {
     return [hdiff = hdiff_stepper(diffusion_coeff)(state, exchange),
             vdiff = vdiff_stepper(diffusion_coeff)(state, exchange),
