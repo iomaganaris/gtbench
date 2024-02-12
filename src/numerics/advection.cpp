@@ -13,7 +13,7 @@
 
 #include <gtbench/numerics/advection.hpp>
 #include <gtbench/numerics/computation.hpp>
-#include <gtbench/utils/profiler.hh>
+#include <gtbench/utils/profiler.hpp>
 
 namespace gtbench {
 namespace numerics {
