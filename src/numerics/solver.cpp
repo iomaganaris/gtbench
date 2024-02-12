@@ -13,6 +13,7 @@
 namespace gtbench {
 namespace numerics {
 stepper_t hdiff_stepper(real_t diffusion_coeff) {
+  ProfileMarker("hdiff_stepper");
   return [diffusion_coeff](solver_state const &state, exchange_t exchange) {
     return [hdiff = diffusion::horizontal(state.resolution, state.delta,
                                           diffusion_coeff),
@@ -26,6 +27,7 @@ stepper_t hdiff_stepper(real_t diffusion_coeff) {
 }
 
 stepper_t vdiff_stepper(real_t diffusion_coeff) {
+  ProfileMarker("vdiff_stepper");
   return [diffusion_coeff](solver_state const &state, exchange_t) {
     return [vdiff = diffusion::vertical(state.resolution, state.delta,
                                         diffusion_coeff)](solver_state &state,
@@ -37,6 +39,7 @@ stepper_t vdiff_stepper(real_t diffusion_coeff) {
 }
 
 stepper_t diff_stepper(real_t diffusion_coeff) {
+  ProfileMarker("diff_stepper");
   return [diffusion_coeff](solver_state const &state, exchange_t exchange) {
     return [hdiff = diffusion::horizontal(state.resolution, state.delta,
                                           diffusion_coeff),
@@ -52,6 +55,7 @@ stepper_t diff_stepper(real_t diffusion_coeff) {
 }
 
 stepper_t hadv_stepper() {
+  ProfileMarker("hadv_stepper");
   return [](solver_state const &state, exchange_t exchange) {
     return [hadv = advection::horizontal(state.resolution, state.delta),
             exchange = std::move(exchange)](solver_state &state,
@@ -64,6 +68,7 @@ stepper_t hadv_stepper() {
 }
 
 stepper_t vadv_stepper() {
+  ProfileMarker("vadv_stepper");
   return [](solver_state const &state, exchange_t) {
     return [vadv = advection::vertical(state.resolution, state.delta)](
                solver_state &state, real_t dt) mutable {
@@ -74,6 +79,7 @@ stepper_t vadv_stepper() {
 }
 
 stepper_t rkadv_stepper() {
+  ProfileMarker("rkadv_stepper");
   return [](solver_state const &state, exchange_t exchange) {
     return [hadv = advection::horizontal(state.resolution, state.delta),
             vadv = advection::vertical(state.resolution, state.delta),
