@@ -13,6 +13,7 @@
 
 #include <gtbench/numerics/advection.hpp>
 #include <gtbench/numerics/computation.hpp>
+#include <gtbench/utils/profiler.hh>
 
 namespace gtbench {
 namespace numerics {
@@ -38,6 +39,7 @@ struct stage_horizontal {
 
   template <typename Evaluation>
   GT_FUNCTION static void apply(Evaluation eval, full_t) {
+    ProfileMarker("horizontal");
     constexpr real_t weight0 = 1_r / 30;
     constexpr real_t weight1 = -1_r / 4;
     constexpr real_t weight2 = 1_r;
@@ -99,6 +101,7 @@ struct stage_advection_w_forward {
 
   template <typename Evaluation>
   GT_FUNCTION static void apply(Evaluation eval, full_t::first_level) {
+    ProfileMarker("advection_w_forward_first_level");
     auto k_offset = eval(k_size()) - 1;
 
     real_t av = -0.25_r / eval(dz()) * eval(w());
@@ -118,6 +121,7 @@ struct stage_advection_w_forward {
 
   template <typename Evaluation>
   GT_FUNCTION static void apply(Evaluation eval, full_t::modify<1, -2>) {
+    ProfileMarker("advection_w_forward_modify");
     real_t av = -0.25_r / eval(dz()) * eval(w());
     real_t bv =
         1_r / eval(dt()) + 0.25_r * (eval(w()) - eval(w(0, 0, 1))) / eval(dz());
@@ -137,6 +141,7 @@ struct stage_advection_w_forward {
   template <typename Evaluation>
   GT_FUNCTION static void apply(Evaluation eval,
                                 full_t::last_level::shift<-1>) {
+    ProfileMarker("advection_w_forward_shift");
     real_t av = -0.25_r / eval(dz()) * eval(w());
     real_t bv =
         1_r / eval(dt()) + 0.25_r * (eval(w()) - eval(w(0, 0, 1))) / eval(dz());
@@ -168,6 +173,7 @@ struct stage_advection_w_backward {
   template <typename Evaluation>
   GT_FUNCTION static void apply(Evaluation eval,
                                 full_t::last_level::shift<-1>) {
+    ProfileMarker("advection_w_backward_shift");
     auto f = 1_r / eval(b());
     eval(d1()) *= f;
     eval(d2()) *= f;
@@ -175,6 +181,7 @@ struct stage_advection_w_backward {
 
   template <typename Evaluation>
   GT_FUNCTION static void apply(Evaluation eval, full_t::modify<0, -2>) {
+    ProfileMarker("advection_w_backward_modify");
     auto cv = 0.25_r / eval(dz()) * eval(w(0, 0, 1));
     auto f = 1_r / eval(b());
     eval(d1()) = (eval(d1()) - cv * eval(d1(0, 0, 1))) * f;
@@ -200,6 +207,7 @@ struct stage_advection_w3 {
 
   template <typename Evaluation>
   GT_FUNCTION static void apply(Evaluation eval, full_t::last_level) {
+    ProfileMarker("advection_w3_last_level");
     auto k_offset = eval(k_size()) - 1;
 
     real_t av = -0.25_r / eval(dz()) * eval(w());
@@ -221,6 +229,7 @@ struct stage_advection_w3 {
 
   template <typename Evaluation>
   GT_FUNCTION static void apply(Evaluation eval, full_t::modify<0, -1>) {
+    ProfileMarker("advection_w3_modify");
     eval(out_top()) = eval(out_top(0, 0, 1));
     eval(out()) =
         eval(in0()) + (eval(d1()) + eval(d2()) * eval(out_top()) - eval(in()));
@@ -232,6 +241,7 @@ struct stage_advection_w3 {
 std::function<void(storage_t, storage_t, storage_t, storage_t, storage_t,
                    real_t)>
 horizontal(vec<std::size_t, 3> const &resolution, vec<real_t, 3> const &delta) {
+  ProfileMarker("horizontal");
   auto grid = computation_grid(resolution.x, resolution.y, resolution.z);
   return [grid = std::move(grid), delta](storage_t out, storage_t in,
                                          storage_t in0, storage_t u,
@@ -246,6 +256,7 @@ horizontal(vec<std::size_t, 3> const &resolution, vec<real_t, 3> const &delta) {
 
 std::function<void(storage_t, storage_t, storage_t, storage_t, real_t)>
 vertical(vec<std::size_t, 3> const &resolution, vec<real_t, 3> const &delta) {
+  ProfileMarker("vertical");
   auto grid = computation_grid(resolution.x, resolution.y, resolution.z);
   auto const spec = [](auto out, auto in, auto in_uncached, auto in0, auto w,
                        auto d1, auto d2, auto k_size, auto dz, auto dt) {

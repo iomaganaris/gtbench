@@ -13,6 +13,7 @@
 
 #include <gtbench/numerics/computation.hpp>
 #include <gtbench/numerics/diffusion.hpp>
+#include <gtbench/utils/profiler.hh>
 
 namespace gtbench {
 namespace numerics {
