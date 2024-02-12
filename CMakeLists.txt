@@ -39,6 +39,7 @@ else()
     set(CMAKE_CUDA_STANDARD 17)
     set(CMAKE_CUDA_EXTENSIONS OFF)
     set(_gtbench_cuda_enabled ON)
+    find_package(CUDAToolkit)
   endif()
 endif()
 

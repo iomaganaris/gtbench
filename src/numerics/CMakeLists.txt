@@ -9,3 +9,5 @@ target_compile_definitions(numerics PRIVATE
 target_link_libraries(numerics PUBLIC gtbench_common)
 target_link_libraries(gtbench PUBLIC numerics)
 target_include_directories(numerics PRIVATE ${PROJECT_SOURCE_DIR}/utils/profiler.hpp)
+target_link_libraries(numerics PRIVATE CUDA::nvtx3 -lnvToolsExt)
+

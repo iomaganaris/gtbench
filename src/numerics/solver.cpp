@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 #include <gtbench/numerics/solver.hpp>
-#include <utils/profiler.hpp>
+#include "../utils/profiler.hpp"
 
 namespace gtbench {
 namespace numerics {
